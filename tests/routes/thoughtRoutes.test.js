@@ -8,14 +8,18 @@ beforeAll(() => connect());
 beforeEach(() => mongoose.connection.dropDatabase());
 afterAll(() => mongoose.connection.close());
 
+function postThought() {
+  return request(app)
+    .post('/api/v1/thoughts')
+    .send({
+      message: 'heres my message about things'
+    });
+}
+
 describe('though route tests', () => {
 
   it('create a new thought', () => {
-    return request(app)
-      .post('/api/v1/thoughts')
-      .send({
-        message: 'heres my message about things'
-      })
+    return postThought()
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
@@ -26,11 +30,7 @@ describe('though route tests', () => {
   });
 
   it('gets all max 500', () => {
-    return request(app)
-      .post('/api/v1/thoughts')
-      .send({
-        message: 'heres my message about things'
-      })
+    return postThought()
       .then(() => {
         return request(app)
           .get('/api/v1/thoughts')
